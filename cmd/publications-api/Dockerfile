@@ -7,7 +7,7 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 RUN GOOS=linux GOARCH=amd64 go mod download
-ENV PACKAGE=github.com/Tarick/naca/publications
+ENV PACKAGE=github.com/Tarick/naca-publications
 ARG BUILD_VERSION
 ADD . .
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags 'netgo static_build' -ldflags "-extldflags=-static -w -s -X ${PACKAGE}/pkg/version.Version=$BUILD_VERSION -X ${PACKAGE}/pkg/version.BuildTime=$(date --utc  +%FT%TZ)" -o ./build/publications-api ./cmd/publications-api
@@ -16,7 +16,7 @@ FROM scratch as final
 WORKDIR /
 ENV TZ=UTC
 COPY --from=build /tmp/swaggerui /swaggerui
-COPY --from=build /app/cmd/publications-api/swagger.json /swaggerui
+COPY --from=build /app/internal/docs/swagger.json /swaggerui
 COPY --from=build /app/build/publications-api /
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 ENTRYPOINT ["./publications-api"]
