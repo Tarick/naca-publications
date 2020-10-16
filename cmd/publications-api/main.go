@@ -1,6 +1,6 @@
 package main
 
-//go:generate swagger generate spec --scan-models -o ../../internal/docs/swagger.json
+//go:generate swagger generate spec --scan-models --include=github.com/Tarick/naca-publications -o ../../internal/docs/swagger.json
 
 import (
 	"fmt"

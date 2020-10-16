@@ -1,0 +1,81 @@
+[
+    {
+      "publisher": {
+        "name": "Last Week in Kubernetes Development",
+        "url": "http://lwkd.info"
+      },
+      "publications": [
+        {
+          "name": "Last Week in Kubernetes Development",
+          "description": "Stay up-to-date on Kubernetes development in 15 minutes a week",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "http://lwkd.info/feed.xml"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Golang Weekly",
+        "url": "https://golangweekly.com/"
+      },
+      "publications": [
+        {
+          "name": "Golang Weekly",
+          "description": "A weekly newsletter about the Go programming language",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://golangweekly.com/rss/182cme6f"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "KorrespondenT.net",
+        "url": "https://korrespondent.net/"
+      },
+      "publications": [
+        {
+          "name": "Останні новини розділу Новини України на сайті korrespondent.net",
+          "description": "Останні новини розділу Новини України на сайті korrespondent.net",
+          "language_code": "ua",
+          "type": "rss",
+          "config": {
+            "url": "http://k.img.com.ua/rss/ua/ukraine.xml"
+          }
+        },
+        {
+          "name": "Останні новини розділу Новини світу на сайті korrespondent.net",
+          "description": "Останні новини розділу Новини світу на сайті korrespondent.net",
+          "language_code": "ua",
+          "type": "rss",
+          "config": {
+            "url": "http://k.img.com.ua/rss/ua/world.xml"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Google Cloud - Medium",
+        "url": "https://medium.com/google-cloud"
+      },
+      "publications": [
+        {
+          "name": "Google Cloud - Community - Medium",
+          "description": "A collection of technical articles and blogs published or curated by Google Cloud Developer Advocates. The views expressed are those of the authors and don&#39;t necessarily reflect those of Google. - Medium",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://medium.com/feed/google-cloud"
+          }
+        }
+      ]
+    }
+
+
+]

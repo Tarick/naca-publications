@@ -172,8 +172,8 @@ func (c *RSSPublicationConfig) Validate() error {
 // Validate body
 func (b *PublicationRequestBody) Validate() error {
 	return validation.ValidateStruct(b,
-		validation.Field(&b.Name, validation.Required, validation.Length(2, 100)),
-		validation.Field(&b.Description, validation.Required, validation.Length(5, 100)),
+		validation.Field(&b.Name, validation.Required, validation.Length(2, 300)),
+		validation.Field(&b.Description, validation.Required, validation.Length(5, 300)),
 		validation.Field(&b.PublisherUUID, validation.Required, is.UUID, validation.By(checkUUIDNotNil)),
 		validation.Field(&b.LanguageCode, validation.Required, validation.Length(2, 3)),
 		validation.Field(&b.Type, validation.Required, validation.By(checkPublicationType)),

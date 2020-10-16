@@ -14,13 +14,13 @@ LDFLAGS=-extldflags=-static -w -s -X ${PACKAGE}/internal/version.Version=${BUILD
 CONTAINER_IMAGE_REGISTRY=local/publications
 
 help:
-	@echo "build, build-images, deps, build-api, build-api-image, generate-api, build-sql-migrations-image"
+	@echo "build, build-images, deps, build-api, build-api-image, generate-api, build-sql-migrations-image, build-importer"
 
 version:
 	@echo "${BUILD_VERSION}"
 
 # ONLY TABS IN THE START OF COMMAND, NO SPACES!
-build: deps build-api
+build: deps build-api build-importer
 
 build-images: build-api-image build-sql-migrations-image
 
@@ -46,6 +46,11 @@ build-api-image:
 	docker build -t ${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_BRANCH}-${BUILD_HASH} \
 	-t ${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_VERSION} \
 	--build-arg BUILD_VERSION=${BUILD_VERSION} -f cmd/publications-api/Dockerfile .
+
+build-importer: deps
+	@echo "[INFO] Building Publications importer binary"
+	go build -ldflags "${LDFLAGS}" -o build/publications-importer ./cmd/publications-importer
+	@echo "[INFO] Build successful"
 
 build-sql-migrations-image:
 	@echo "[INFO] Building SQL migrations image"

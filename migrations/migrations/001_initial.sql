@@ -231,7 +231,6 @@ DROP trigger set_timestamp ON "publishers";
 
 DROP FUNCTION trigger_set_timestamp;
 
-DROP TABLE "rss_publications";
 DROP TABLE "publications";
 DROP TABLE "world_languages"
 DROP TABLE "publishers";
