@@ -59,7 +59,7 @@ func (c *client) CreatePublisher(ctx context.Context, name string, url string) (
 	if res.StatusCode == http.StatusCreated {
 		// Create new publisher from response
 		responsePublisher := &entity.Publisher{}
-		if err = json.NewDecoder(res.Body).Decode(responsePublisher); err == nil {
+		if err = json.NewDecoder(res.Body).Decode(responsePublisher); err != nil {
 			return entity.Publisher{}, err
 		}
 		return *responsePublisher, nil
@@ -112,7 +112,7 @@ func (c *client) CreatePublication(
 	}
 	// handle error
 	var errRes server.ErrResponseBody
-	if err = json.NewDecoder(res.Body).Decode(&errRes); err == nil {
+	if err = json.NewDecoder(res.Body).Decode(&errRes); err != nil {
 		return entity.Publication{}, errors.New(errRes.ErrorText)
 	}
 	return entity.Publication{}, fmt.Errorf("unknown error, status code: %d, message: %v", res.StatusCode, res.Status)

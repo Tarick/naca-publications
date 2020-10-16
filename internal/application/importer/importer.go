@@ -48,7 +48,6 @@ func (ip *Importer) RunImport(bytes []byte) error {
 			})
 			continue
 		}
-		_ = publisher
 		for _, publication := range entrie.Publications {
 			if _, err := ip.APIClient.CreatePublication(
 				context.Background(),
@@ -72,5 +71,6 @@ func (ip *Importer) RunImport(bytes []byte) error {
 		}
 		return fmt.Errorf("import failed for %d entries", len(importErrors))
 	}
+	fmt.Println("Import finished successfully")
 	return nil
 }

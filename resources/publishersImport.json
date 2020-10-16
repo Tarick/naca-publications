@@ -42,7 +42,7 @@
         {
           "name": "Останні новини розділу Новини України на сайті korrespondent.net",
           "description": "Останні новини розділу Новини України на сайті korrespondent.net",
-          "language_code": "ua",
+          "language_code": "uk",
           "type": "rss",
           "config": {
             "url": "http://k.img.com.ua/rss/ua/ukraine.xml"
@@ -51,7 +51,7 @@
         {
           "name": "Останні новини розділу Новини світу на сайті korrespondent.net",
           "description": "Останні новини розділу Новини світу на сайті korrespondent.net",
-          "language_code": "ua",
+          "language_code": "uk",
           "type": "rss",
           "config": {
             "url": "http://k.img.com.ua/rss/ua/world.xml"
