@@ -75,7 +75,175 @@
           }
         }
       ]
+    },
+    {
+      "publisher": {
+        "name": "Google Cloud Platform Blog",
+        "url": "http://cloudplatform.googleblog.com/"
+      },
+      "publications": [
+        {
+          "name": "Cloud Blog",
+          "description": "Cloud Blog",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://cloudblog.withgoogle.com/rss/"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Kubernetes – Production-Grade Container Orchestration",
+        "url": "https://kubernetes.io/"
+      },
+      "publications": [
+        {
+          "name": "Kubernetes – Production-Grade Container Orchestration",
+          "description": "The Kubernetes project blog",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://kubernetes.io/feed.xml"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Google Cloud",
+        "url": "https://cloud.google.com"
+      },
+      "publications": [
+        {
+          "name": "Kubernetes Engine - Release Notes",
+          "description": "Kubernetes Engine - Release Notes",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://cloud.google.com/feeds/kubernetes-engine-release-notes.xml"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "NASA",
+        "url": "https://www.nasa.gov/"
+      },
+      "publications": [
+        {
+          "name": "Space Station",
+          "description": "Off The Earth, For The Earth",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://blogs.nasa.gov/spacestation/feed/"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "The Go Programming Language Blog",
+        "url": "https://blog.golang.org/"
+      },
+      "publications": [
+        {
+          "name": "The Go Programming Language Blog",
+          "description": "The Go Programming Language Blog",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "https://blog.golang.org/feed.atom"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "AWS News Blog",
+        "url": "https://aws.amazon.com/blogs/aws/"
+      },
+      "publications": [
+        {
+          "name": "AWS News Blog",
+          "description": "AWS News Blog",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "http://feeds.feedburner.com/AmazonWebServicesBlog"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "ExtremeTechExtremeTech",
+        "url": "https://www.extremetech.com"
+      },
+      "publications": [
+        {
+          "name": "ExtremeTechExtremeTech",
+          "description": "ExtremeTechExtremeTech",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "http://feeds.feedburner.com/ziffdavis/extremetech"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Slashdot",
+        "url": "https://slashdot.org/"
+      },
+      "publications": [
+        {
+          "name": "Slashdot",
+          "description": "News for nerds, stuff that matters",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "http://rss.slashdot.org/Slashdot/slashdot"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Хабрахабр / Интересные публикации",
+        "url": "https://habrahabr.ru/"
+      },
+      "publications": [
+        {
+          "name": "Все публикации подряд",
+          "description": "Все публикации подряд на Хабре",
+          "language_code": "ru",
+          "type": "rss",
+          "config": {
+            "url": "http://habrahabr.ru/rss/"
+          }
+        }
+      ]
+    },
+    {
+      "publisher": {
+        "name": "Ars Technica",
+        "url": "https://arstechnica.com"
+      },
+      "publications": [
+        {
+          "name": "All News",
+          "description": "Every article from every section of the site",
+          "language_code": "en",
+          "type": "rss",
+          "config": {
+            "url": "http://feeds.arstechnica.com/arstechnica/index"
+          }
+        }
+      ]
     }
-
-
 ]

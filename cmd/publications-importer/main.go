@@ -22,10 +22,11 @@ func main() {
 		Example: `publications-importer --url http://publications publications.json`,
 		// Positional arg - one filename of the feed with entries
 		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
 			// Client for RSS Feeds API
 			if len(args) > 1 {
-				return fmt.Errorf("Number of parameters more than 1, we accept only one filename: %s", args)
+				fmt.Println("Number of parameters more than 1, we accept only one filename: ", args)
+				os.Exit(1)
 			}
 			// Open filename and pass to importer
 			if fp, err := os.Open(args[0]); err == nil {
@@ -34,16 +35,23 @@ func main() {
 				ip := importer.Importer{
 					APIClient: apiclient.New(publicationsAPIURL),
 				}
-				return ip.RunImport(bytes)
+				err := ip.RunImport(bytes)
+				if err != nil {
+					fmt.Println("Error running import: ", err)
+					os.Exit(1)
+				}
 			} else if os.IsNotExist(err) {
-				return fmt.Errorf("Path '%s' does not exist", args[0])
+				fmt.Printf("Path '%s' does not exist", args[0])
+				os.Exit(1)
 			} else {
-				return err
+				fmt.Println(err)
+				os.Exit(1)
 			}
 		},
 	}
 	rootCmd.Flags().StringVar(&publicationsAPIURL, "url", "", "base URL to publications api, e.g. http://publication-api:8080")
 	rootCmd.MarkFlagRequired("url")
+
 	versionCmd := &cobra.Command{
 		Use:   "version",
 		Short: "Print the version number of application",
