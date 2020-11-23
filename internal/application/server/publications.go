@@ -161,6 +161,7 @@ type RSSPublicationConfig struct {
 // type APIPublicationConfig struct {
 // 	URL    string `json:"url"`
 // 	APIKey string `json:"api_key"`
+// 	LanguageCode string `json:"language_code"`
 // }
 
 func (c *RSSPublicationConfig) Validate() error {
@@ -175,7 +176,7 @@ func (b *PublicationRequestBody) Validate() error {
 		validation.Field(&b.Name, validation.Required, validation.Length(2, 300)),
 		validation.Field(&b.Description, validation.Required, validation.Length(5, 300)),
 		validation.Field(&b.PublisherUUID, validation.Required, is.UUID, validation.By(checkUUIDNotNil)),
-		validation.Field(&b.LanguageCode, validation.Required, validation.Length(2, 3)),
+		validation.Field(&b.LanguageCode, validation.Required, is.CountryCode2),
 		validation.Field(&b.Type, validation.Required, validation.By(checkPublicationType)),
 		validation.Field(&b.Config),
 	)
@@ -234,7 +235,7 @@ func (s *Server) publicationCtx(next http.Handler) http.Handler {
 }
 
 // Response with single feed
-// TODO: with full details from subservices
+// TODO: with full details from subservices (RSS API)
 func (s *Server) getPublication(w http.ResponseWriter, r *http.Request) {
 	publication := r.Context().Value("publication").(*entity.Publication)
 	newPublicationResponse(publication).Render(w, r)
@@ -260,7 +261,6 @@ func (s *Server) updatePublication(w http.ResponseWriter, r *http.Request) {
 	newPublicationResponse(publication).Render(w, r)
 }
 func requestToPublication(r *http.Request) (*entity.Publication, PublicationConfig, error) {
-	// TODO: optimize allocation?
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, nil, err
@@ -313,7 +313,7 @@ func (s *Server) createPublication(w http.ResponseWriter, r *http.Request) {
 	switch v := publicationConfig.(type) {
 	case RSSPublicationConfig:
 		//FIXME: Fix context
-		if err := s.rssFeedsAPIClient.CreateRSSFeed(context.Background(), publication.UUID, v.URL); err != nil {
+		if err := s.rssFeedsAPIClient.CreateRSSFeed(context.Background(), publication.UUID, v.URL, publication.LanguageCode); err != nil {
 			s.logger.Error("Failure creating RSS Feeds Publication in RSS service: ", err)
 			errs := fmt.Errorf("failure creating publication: %w", err)
 			// revert publication creation. No need for full saga patern yet.
@@ -343,7 +343,7 @@ func (s *Server) deletePublication(w http.ResponseWriter, r *http.Request) {
 
 // Returns publication entries
 // TODO: filtering
-// TODO: get data with full details from sub services (RSS)
+// TODO: get data with full details from sub services (RSS API, scraping config?)
 func (s *Server) getPublications(w http.ResponseWriter, r *http.Request) {
 	publications, err := s.repository.GetPublications()
 	if err != nil {

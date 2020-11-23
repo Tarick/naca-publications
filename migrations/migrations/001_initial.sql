@@ -9,6 +9,7 @@ CREATE TABLE publishers (
   created_at timestamptz NOT NULL DEFAULT NOW(),
   modified_at timestamptz NOT NULL DEFAULT NOW()
 );
+
 CREATE TRIGGER set_timestamp BEFORE UPDATE ON "publishers" FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
 
 create table publication_types (

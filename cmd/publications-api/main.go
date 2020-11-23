@@ -13,7 +13,7 @@ import (
 	"github.com/Tarick/naca-publications/internal/repository/postgresql"
 	"github.com/Tarick/naca-publications/internal/version"
 
-	rssAPIClient "github.com/Tarick/naca-rss-feeds/apiclient"
+	rssAPIClient "github.com/Tarick/naca-rss-feeds/pkg/apiclient"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -65,7 +65,11 @@ func main() {
 			}
 			// Client for RSS Feeds API
 			rssFeedsAPIURL := viper.GetString("rss_api_url")
-			rssFeedsAPIClient := rssAPIClient.New(rssFeedsAPIURL)
+			rssFeedsAPIClient, err := rssAPIClient.New(rssFeedsAPIURL)
+			if err != nil {
+				fmt.Println("FATAL: failure creating RSS API Client, ", err)
+				os.Exit(1)
+			}
 
 			// Create web server
 			serverCfg := server.Config{}

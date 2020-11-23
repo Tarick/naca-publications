@@ -45,8 +45,8 @@ type PublicationsRepository interface {
 
 // RSSFeedsAPIClient is used to call RSS Feeds service
 type RSSFeedsAPIClient interface {
-	CreateRSSFeed(context.Context, uuid.UUID, string) error
-	UpdateRSSFeed(context.Context, uuid.UUID, string) error
+	CreateRSSFeed(context.Context, uuid.UUID, string, string) error
+	UpdateRSSFeed(context.Context, uuid.UUID, string, string) error
 	DeleteRSSFeed(context.Context, uuid.UUID) error
 }
 

@@ -2,7 +2,7 @@ SHELL:=/bin/bash
 
 .DEFAULT_GOAL := help
 # put here commands, that have the same name as files in dir
-.PHONY: run clean generate build docker_build docker_push
+.PHONY: run clean generate build docker_build docker_push deploy-to-local-k8s build-and-deploy
 
 BUILD_TAG=$(shell git describe --tags --abbrev=0 HEAD)
 BUILD_HASH=$(shell git rev-parse --short HEAD)
@@ -14,7 +14,8 @@ LDFLAGS=-extldflags=-static -w -s -X ${PACKAGE}/internal/version.Version=${BUILD
 CONTAINER_IMAGE_REGISTRY=local/publications
 
 help:
-	@echo "build, build-images, deps, build-api, build-api-image, generate-api, build-sql-migrations-image, build-importer"
+	@echo "build, build-images, deps, build-api, build-api-image, generate-api, build-sql-migrations-image, build-importer, build-and-deploy, deploy-to-local-k8s"
+
 
 version:
 	@echo "${BUILD_VERSION}"
@@ -57,3 +58,12 @@ build-sql-migrations-image:
 	docker build -t ${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_BRANCH}-${BUILD_HASH} \
 	-t ${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_VERSION} \
 	-f migrations/Dockerfile .
+
+build-and-deploy: build-images deploy-to-local-k8s
+
+deploy-to-local-k8s:
+	@echo "[INFO] Deploying current Publications to local k8s service"
+	@echo "[INFO] Deleting old SQL migrations"
+	helmfile --environment local --selector app_name=publications-sql-migrations -f ../naca-ops-config/helm/helmfile.yaml destroy
+	@echo "[INFO] Deploying rss-feeds images with tag ${BUILD_VERSION}"
+	RSS_FEEDS_TAG=${BUILD_VERSION} helmfile --environment local --selector tier=naca-publications -f ../naca-ops-config/helm/helmfile.yaml sync --skip-deps
