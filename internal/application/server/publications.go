@@ -176,7 +176,7 @@ func (b *PublicationRequestBody) Validate() error {
 		validation.Field(&b.Name, validation.Required, validation.Length(2, 300)),
 		validation.Field(&b.Description, validation.Required, validation.Length(5, 300)),
 		validation.Field(&b.PublisherUUID, validation.Required, is.UUID, validation.By(checkUUIDNotNil)),
-		validation.Field(&b.LanguageCode, validation.Required, is.CountryCode2),
+		validation.Field(&b.LanguageCode, validation.Required, validation.Length(2, 2), is.Alpha, is.LowerCase),
 		validation.Field(&b.Type, validation.Required, validation.By(checkPublicationType)),
 		validation.Field(&b.Config),
 	)

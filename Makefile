@@ -66,4 +66,4 @@ deploy-to-local-k8s:
 	@echo "[INFO] Deleting old SQL migrations"
 	helmfile --environment local --selector app_name=publications-sql-migrations -f ../naca-ops-config/helm/helmfile.yaml destroy
 	@echo "[INFO] Deploying rss-feeds images with tag ${BUILD_VERSION}"
-	RSS_FEEDS_TAG=${BUILD_VERSION} helmfile --environment local --selector tier=naca-publications -f ../naca-ops-config/helm/helmfile.yaml sync --skip-deps
+	PUBLICATIONS_TAG=${BUILD_VERSION} helmfile --environment local --selector tier=naca-publications -f ../naca-ops-config/helm/helmfile.yaml sync --skip-deps
