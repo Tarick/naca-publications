@@ -158,7 +158,28 @@
         }
       }
     },
-    "/publishers/{publication_uuid}": {
+    "/publishers/{publisher_uuid}": {
+      "get": {
+        "description": "Gets single publisher using its publisher_uuid as parameter",
+        "operationId": "getPublisher",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "publisher_uuid to get",
+            "name": "publisher_uuid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/PublisherResponse"
+          },
+          "default": {
+            "$ref": "#/responses/ErrResponse"
+          }
+        }
+      },
       "put": {
         "description": "Modifies Publisher using supplied params from body",
         "operationId": "updatePublisher",
@@ -205,29 +226,6 @@
         }
       }
     },
-    "/publishers/{publisher_uuid}": {
-      "get": {
-        "description": "Gets single publisher using its publisher_uuid as parameter",
-        "operationId": "getPublisher",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "publisher_uuid to get",
-            "name": "publisher_uuid",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/PublisherResponse"
-          },
-          "default": {
-            "$ref": "#/responses/ErrResponse"
-          }
-        }
-      }
-    },
     "/publishers/{publisher_uuid}/publications": {
       "get": {
         "description": "Get publisher publications",
@@ -243,7 +241,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/PublicationsResponse"
+            "$ref": "#/responses/PublisherResponse"
           },
           "default": {
             "$ref": "#/responses/ErrResponse"

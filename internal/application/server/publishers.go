@@ -73,12 +73,12 @@ func (s *Server) publishersRouter() http.Handler {
 		//    type: string
 		// responses:
 		//    '200':
-		//      $ref: "#/responses/PublicationsResponse"
+		//      $ref: "#/responses/PublisherResponse"
 		//    default:
 		//      $ref: "#/responses/ErrResponse"
 		r.Get("/publications", s.getPublisherPublications)
 
-		// swagger:operation PUT /publishers/{publication_uuid} updatePublisher
+		// swagger:operation PUT /publishers/{publisher_uuid} updatePublisher
 		// Modifies Publisher using supplied params from body
 		// ---
 		// parameters:
@@ -95,7 +95,7 @@ func (s *Server) publishersRouter() http.Handler {
 		//      $ref: "#/responses/ErrResponse"
 		r.Put("/", s.updatePublisher)
 
-		// swagger:operation DELETE /publishers/{publication_uuid} deletePublisher
+		// swagger:operation DELETE /publishers/{publisher_uuid} deletePublisher
 		// Deletes publisher using its uuid
 		// ---
 		// parameters:

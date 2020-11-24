@@ -12,6 +12,7 @@ import (
 
 	"github.com/Tarick/naca-publications/internal/entity"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/go-chi/stampede"
@@ -170,13 +171,17 @@ func (c *RSSPublicationConfig) Validate() error {
 	)
 }
 
+var isLanguageCode = validation.NewStringRuleWithError(
+	govalidator.IsISO693Alpha2,
+	validation.NewError("validation_is_language_code_2_letter", "must be a valid two-letter ISO693Alpha2 language code"))
+
 // Validate body
 func (b *PublicationRequestBody) Validate() error {
 	return validation.ValidateStruct(b,
 		validation.Field(&b.Name, validation.Required, validation.Length(2, 300)),
 		validation.Field(&b.Description, validation.Required, validation.Length(5, 300)),
 		validation.Field(&b.PublisherUUID, validation.Required, is.UUID, validation.By(checkUUIDNotNil)),
-		validation.Field(&b.LanguageCode, validation.Required, validation.Length(2, 2), is.Alpha, is.LowerCase),
+		validation.Field(&b.LanguageCode, validation.Required, validation.Length(2, 2), isLanguageCode),
 		validation.Field(&b.Type, validation.Required, validation.By(checkPublicationType)),
 		validation.Field(&b.Config),
 	)

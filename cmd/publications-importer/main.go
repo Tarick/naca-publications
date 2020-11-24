@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Tarick/naca-publications/apiclient"
 	"github.com/Tarick/naca-publications/internal/application/importer"
 	"github.com/Tarick/naca-publications/internal/version"
+	"github.com/Tarick/naca-publications/pkg/apiclient"
 
 	"github.com/spf13/cobra"
 )

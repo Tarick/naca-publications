@@ -7,7 +7,8 @@ replace github.com/Tarick/naca-publications => ./
 // replace github.com/Tarick/naca-rss-feeds => ../naca-rss-feeds
 
 require (
-	github.com/Tarick/naca-rss-feeds v0.0.2-0.20201123140708-17ff37e5e0a1 // indirect
+	github.com/Tarick/naca-rss-feeds v0.0.2-0.20201124160008-ae81e7dfc37a
+	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/cors v1.1.1
 	github.com/go-chi/render v1.0.1
