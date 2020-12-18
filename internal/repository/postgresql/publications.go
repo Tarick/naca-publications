@@ -12,18 +12,18 @@ import (
 )
 
 // CreatePublication inserts new publisher into db
-func (repo *Repository) CreatePublication(p *entity.Publication) error {
-	if repo.publicationExists(p) {
+func (repo *Repository) CreatePublication(ctx context.Context, p *entity.Publication) error {
+	if repo.publicationExists(ctx, p) {
 		return errors.New("publication already exists")
 	}
-	_, err := repo.pool.Exec(context.Background(), "insert into publications (uuid, name, description, type, publisher_uuid, language_code) values ($1, $2, $3, $4, $5, $6)",
+	_, err := repo.pool.Exec(ctx, "insert into publications (uuid, name, description, type, publisher_uuid, language_code) values ($1, $2, $3, $4, $5, $6)",
 		p.UUID, p.Name, p.Description, p.Type, p.PublisherUUID, p.LanguageCode)
 	return err
 }
 
-func (repo *Repository) publicationExists(p *entity.Publication) bool {
+func (repo *Repository) publicationExists(ctx context.Context, p *entity.Publication) bool {
 	var exists bool
-	row := repo.pool.QueryRow(context.Background(), "select exists (select 1 from publications where uuid=$1 or (publisher_uuid=$2 and name=$3))", p.UUID, p.PublisherUUID, p.Name)
+	row := repo.pool.QueryRow(ctx, "select exists (select 1 from publications where uuid=$1 or (publisher_uuid=$2 and name=$3))", p.UUID, p.PublisherUUID, p.Name)
 	if err := row.Scan(&exists); err != nil {
 		panic(err)
 	}
@@ -34,14 +34,14 @@ func (repo *Repository) publicationExists(p *entity.Publication) bool {
 }
 
 // UpdatePublication updates Publication in db
-func (repo *Repository) UpdatePublication(p *entity.Publication) error {
-	_, err := repo.pool.Exec(context.Background(), "update publications set name=$1, description=$2, language_code=$3 where uuid=$4", p.Name, p.Description, p.LanguageCode, p.UUID)
+func (repo *Repository) UpdatePublication(ctx context.Context, p *entity.Publication) error {
+	_, err := repo.pool.Exec(ctx, "update publications set name=$1, description=$2, language_code=$3 where uuid=$4", p.Name, p.Description, p.LanguageCode, p.UUID)
 	return err
 }
 
 // DeletePublication removes Publications from db
-func (repo *Repository) DeletePublication(uuid uuid.UUID) error {
-	result, err := repo.pool.Exec(context.Background(), "delete from publications where uuid=$1", uuid)
+func (repo *Repository) DeletePublication(ctx context.Context, uuid uuid.UUID) error {
+	result, err := repo.pool.Exec(ctx, "delete from publications where uuid=$1", uuid)
 	if err != nil {
 		return err
 	}
@@ -53,9 +53,9 @@ func (repo *Repository) DeletePublication(uuid uuid.UUID) error {
 }
 
 // GetPublication returns Publication from db
-func (repo *Repository) GetPublication(uuid uuid.UUID) (*entity.Publication, error) {
+func (repo *Repository) GetPublication(ctx context.Context, uuid uuid.UUID) (*entity.Publication, error) {
 	p := &entity.Publication{}
-	err := repo.pool.QueryRow(context.Background(), "select uuid, name, description, language_code, publisher_uuid, type from publications where uuid=$1", uuid).
+	err := repo.pool.QueryRow(ctx, "select uuid, name, description, language_code, publisher_uuid, type from publications where uuid=$1", uuid).
 		Scan(&p.UUID, &p.Name, &p.Description, &p.LanguageCode, &p.PublisherUUID, &p.Type)
 	if err != nil && err == pgx.ErrNoRows {
 		return nil, nil
@@ -67,8 +67,8 @@ func (repo *Repository) GetPublication(uuid uuid.UUID) (*entity.Publication, err
 }
 
 // GetPublications returns list of Publication from db
-func (repo *Repository) GetPublications() ([]*entity.Publication, error) {
-	rows, err := repo.pool.Query(context.Background(), "select uuid, name, description, language_code, publisher_uuid, type from publications")
+func (repo *Repository) GetPublications(ctx context.Context) ([]*entity.Publication, error) {
+	rows, err := repo.pool.Query(ctx, "select uuid, name, description, language_code, publisher_uuid, type from publications")
 	if err != nil {
 		return nil, err
 	}

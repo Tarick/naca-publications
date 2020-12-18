@@ -30,17 +30,17 @@ type Server struct {
 
 // PublicationsRepository represents repository for both publishers and publications
 type PublicationsRepository interface {
-	CreatePublication(*entity.Publication) error
-	UpdatePublication(*entity.Publication) error
-	DeletePublication(uuid.UUID) error
-	GetPublication(uuid.UUID) (*entity.Publication, error)
-	GetPublications() ([]*entity.Publication, error)
-	GetPublicationsByPublisher(uuid.UUID) ([]*entity.Publication, error)
-	CreatePublisher(*entity.Publisher) error
-	UpdatePublisher(*entity.Publisher) error
-	DeletePublisher(uuid.UUID) error
-	GetPublisher(uuid.UUID) (*entity.Publisher, error)
-	GetPublishers() ([]*entity.Publisher, error)
+	CreatePublication(context.Context, *entity.Publication) error
+	UpdatePublication(context.Context, *entity.Publication) error
+	DeletePublication(context.Context, uuid.UUID) error
+	GetPublication(context.Context, uuid.UUID) (*entity.Publication, error)
+	GetPublications(context.Context) ([]*entity.Publication, error)
+	GetPublicationsByPublisher(context.Context, uuid.UUID) ([]*entity.Publication, error)
+	CreatePublisher(context.Context, *entity.Publisher) error
+	UpdatePublisher(context.Context, *entity.Publisher) error
+	DeletePublisher(context.Context, uuid.UUID) error
+	GetPublisher(context.Context, uuid.UUID) (*entity.Publisher, error)
+	GetPublishers(context.Context) ([]*entity.Publisher, error)
 }
 
 // RSSFeedsAPIClient is used to call RSS Feeds service

@@ -183,7 +183,7 @@ func (s *Server) publisherCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		publisher, err := s.repository.GetPublisher(publisherUUID)
+		publisher, err := s.repository.GetPublisher(r.Context(), publisherUUID)
 		if err != nil {
 			ErrInternal(fmt.Errorf("Failure getting Publisher data")).Render(w, r)
 			return
@@ -211,7 +211,7 @@ func (s *Server) updatePublisher(w http.ResponseWriter, r *http.Request) {
 	}
 	publisher.Name = data.Name
 	publisher.URL = data.URL
-	if err := s.repository.UpdatePublisher(publisher); err != nil {
+	if err := s.repository.UpdatePublisher(r.Context(), publisher); err != nil {
 		// log.Error(fmt.Sprintf("Failure updating publisher %v: %s", publisher, err))
 		ErrInternal(fmt.Errorf("Failure updating publisher")).Render(w, r)
 		return
@@ -231,7 +231,7 @@ func (s *Server) createPublisher(w http.ResponseWriter, r *http.Request) {
 		ErrInternal(err).Render(w, r)
 		return
 	}
-	if err := s.repository.CreatePublisher(publisher); err != nil {
+	if err := s.repository.CreatePublisher(r.Context(), publisher); err != nil {
 		// log.Error(fmt.Sprintf("Failure creating publisher %v in database: %s", publisher, err))
 		ErrInternal(fmt.Errorf("Failure creating publisher")).Render(w, r)
 		return
@@ -242,7 +242,7 @@ func (s *Server) createPublisher(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) deletePublisher(w http.ResponseWriter, r *http.Request) {
 	publisher := r.Context().Value("publisher").(*entity.Publisher)
-	if err := s.repository.DeletePublisher(publisher.UUID); err != nil {
+	if err := s.repository.DeletePublisher(r.Context(), publisher.UUID); err != nil {
 		// log.Error(fmt.Sprintf("Failure deleting publisher %v: %s", publisher, err))
 		ErrInternal(fmt.Errorf("Failure deleting publisher %v", publisher)).Render(w, r)
 		return
@@ -252,7 +252,7 @@ func (s *Server) deletePublisher(w http.ResponseWriter, r *http.Request) {
 
 // TODO: filtering
 func (s *Server) getPublishers(w http.ResponseWriter, r *http.Request) {
-	publishers, err := s.repository.GetPublishers()
+	publishers, err := s.repository.GetPublishers(r.Context())
 	if err != nil {
 		// log.Error(fmt.Sprint("Failure querying for publishers: ", err))
 		ErrInternal(errors.New("Failure querying database for publishers")).Render(w, r)
@@ -267,7 +267,7 @@ func (s *Server) getPublishers(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) getPublisherPublications(w http.ResponseWriter, r *http.Request) {
 	publisher := r.Context().Value("publisher").(*entity.Publisher)
-	publications, err := s.repository.GetPublicationsByPublisher(publisher.UUID)
+	publications, err := s.repository.GetPublicationsByPublisher(r.Context(), publisher.UUID)
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("Failure querying for publications per publisher %s: %v", publisher.UUID, err))
 		ErrInternal(fmt.Errorf("Failure querying database for publications")).Render(w, r)

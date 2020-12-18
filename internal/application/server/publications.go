@@ -224,7 +224,7 @@ func (s *Server) publicationCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		publication, err := s.repository.GetPublication(publicationUUID)
+		publication, err := s.repository.GetPublication(r.Context(), publicationUUID)
 		if err != nil {
 			ErrInternal(fmt.Errorf("Failure getting Publication data")).Render(w, r)
 			return
@@ -258,7 +258,7 @@ func (s *Server) updatePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	publication.Name, publication.Description, publication.LanguageCode = publicationUpdated.Name, publicationUpdated.Description, publicationUpdated.LanguageCode
-	if err := s.repository.UpdatePublication(publication); err != nil {
+	if err := s.repository.UpdatePublication(r.Context(), publication); err != nil {
 		s.logger.Error(fmt.Sprintf("Failure updating publication %v: %s", publication, err))
 		ErrInternal(fmt.Errorf("Failure updating publication")).Render(w, r)
 		return
@@ -310,7 +310,7 @@ func (s *Server) createPublication(w http.ResponseWriter, r *http.Request) {
 		ErrInvalidRequest(err).Render(w, r)
 		return
 	}
-	if err := s.repository.CreatePublication(publication); err != nil {
+	if err := s.repository.CreatePublication(r.Context(), publication); err != nil {
 		s.logger.Error(fmt.Sprintf("Failure creating publication %v in database: %s", publication, err))
 		ErrInternal(fmt.Errorf("Failure creating publication")).Render(w, r)
 		return
@@ -318,11 +318,11 @@ func (s *Server) createPublication(w http.ResponseWriter, r *http.Request) {
 	switch v := publicationConfig.(type) {
 	case RSSPublicationConfig:
 		//FIXME: Fix context
-		if err := s.rssFeedsAPIClient.CreateRSSFeed(context.Background(), publication.UUID, v.URL, publication.LanguageCode); err != nil {
+		if err := s.rssFeedsAPIClient.CreateRSSFeed(r.Context(), publication.UUID, v.URL, publication.LanguageCode); err != nil {
 			s.logger.Error("Failure creating RSS Feeds Publication in RSS service: ", err)
 			errs := fmt.Errorf("failure creating publication: %w", err)
 			// revert publication creation. No need for full saga patern yet.
-			if err = s.repository.DeletePublication(publication.UUID); err != nil {
+			if err = s.repository.DeletePublication(r.Context(), publication.UUID); err != nil {
 				s.logger.Error("Failure deleting failed RSS Publication from repository: ", err)
 				errs = fmt.Errorf("%w, failure deleting created publication from repository: %w", errs, err)
 			}
@@ -338,7 +338,7 @@ func (s *Server) createPublication(w http.ResponseWriter, r *http.Request) {
 // TODO: implement removal from sub services (RSS)
 func (s *Server) deletePublication(w http.ResponseWriter, r *http.Request) {
 	publication := r.Context().Value("publication").(*entity.Publication)
-	if err := s.repository.DeletePublication(publication.UUID); err != nil {
+	if err := s.repository.DeletePublication(r.Context(), publication.UUID); err != nil {
 		s.logger.Error(fmt.Sprintf("Failure deleting publication %v: %s", publication, err))
 		ErrInternal(fmt.Errorf("Failure deleting publication %v", publication)).Render(w, r)
 		return
@@ -350,7 +350,7 @@ func (s *Server) deletePublication(w http.ResponseWriter, r *http.Request) {
 // TODO: filtering
 // TODO: get data with full details from sub services (RSS API, scraping config?)
 func (s *Server) getPublications(w http.ResponseWriter, r *http.Request) {
-	publications, err := s.repository.GetPublications()
+	publications, err := s.repository.GetPublications(r.Context())
 	if err != nil {
 		s.logger.Error(fmt.Sprint("Failure querying for publications: ", err))
 		ErrInternal(fmt.Errorf("Failure querying database for publications")).Render(w, r)

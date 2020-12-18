@@ -12,20 +12,20 @@ import (
 )
 
 // CreatePublisher inserts new publisher into db
-func (repo *Repository) CreatePublisher(p *entity.Publisher) error {
-	_, err := repo.pool.Exec(context.Background(), "insert into publishers (uuid, name, url) values ($1, $2, $3)", p.UUID, p.Name, p.URL)
+func (repo *Repository) CreatePublisher(ctx context.Context, p *entity.Publisher) error {
+	_, err := repo.pool.Exec(ctx, "insert into publishers (uuid, name, url) values ($1, $2, $3)", p.UUID, p.Name, p.URL)
 	return err
 }
 
 // UpdatePublisher updates Publisher in db
-func (repo *Repository) UpdatePublisher(p *entity.Publisher) error {
-	_, err := repo.pool.Exec(context.Background(), "update publishers set name=$1, url=$2 where uuid=$3", p.Name, p.URL, p.UUID)
+func (repo *Repository) UpdatePublisher(ctx context.Context, p *entity.Publisher) error {
+	_, err := repo.pool.Exec(ctx, "update publishers set name=$1, url=$2 where uuid=$3", p.Name, p.URL, p.UUID)
 	return err
 }
 
 // DeletePublisher removes Publishers from db
-func (repo *Repository) DeletePublisher(uuid uuid.UUID) error {
-	result, err := repo.pool.Exec(context.Background(), "delete from publishers where uuid=$1", uuid)
+func (repo *Repository) DeletePublisher(ctx context.Context, uuid uuid.UUID) error {
+	result, err := repo.pool.Exec(ctx, "delete from publishers where uuid=$1", uuid)
 	if err != nil {
 		return err
 	}
@@ -36,9 +36,9 @@ func (repo *Repository) DeletePublisher(uuid uuid.UUID) error {
 }
 
 // GetPublisher returns Publisher from db
-func (repo *Repository) GetPublisher(uuid uuid.UUID) (*entity.Publisher, error) {
+func (repo *Repository) GetPublisher(ctx context.Context, uuid uuid.UUID) (*entity.Publisher, error) {
 	p := &entity.Publisher{}
-	err := repo.pool.QueryRow(context.Background(), "select uuid, name, url from publishers where uuid=$1", uuid).Scan(&p.UUID, &p.Name, &p.URL)
+	err := repo.pool.QueryRow(ctx, "select uuid, name, url from publishers where uuid=$1", uuid).Scan(&p.UUID, &p.Name, &p.URL)
 	if err != nil && err == pgx.ErrNoRows {
 		return nil, nil
 	}
@@ -49,8 +49,8 @@ func (repo *Repository) GetPublisher(uuid uuid.UUID) (*entity.Publisher, error) 
 }
 
 // GetPublishers returns list of Publisher from db
-func (repo *Repository) GetPublishers() ([]*entity.Publisher, error) {
-	rows, err := repo.pool.Query(context.Background(), "select uuid, name, url from publishers")
+func (repo *Repository) GetPublishers(ctx context.Context) ([]*entity.Publisher, error) {
+	rows, err := repo.pool.Query(ctx, "select uuid, name, url from publishers")
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +69,8 @@ func (repo *Repository) GetPublishers() ([]*entity.Publisher, error) {
 }
 
 // GetPublicationsByPublisher returns list of Publication filterered by publisher uuid
-func (repo *Repository) GetPublicationsByPublisher(publisherUUID uuid.UUID) ([]*entity.Publication, error) {
-	rows, err := repo.pool.Query(context.Background(), "select uuid, name, description, language_code, publisher_uuid, pt.type from publications  join publication_types pt on type_id = id where publisher_uuid=$1", publisherUUID)
+func (repo *Repository) GetPublicationsByPublisher(ctx context.Context, publisherUUID uuid.UUID) ([]*entity.Publication, error) {
+	rows, err := repo.pool.Query(ctx, "select uuid, name, description, language_code, publisher_uuid, pt.type from publications  join publication_types pt on type_id = id where publisher_uuid=$1", publisherUUID)
 	if err != nil {
 		return nil, err
 	}

@@ -38,9 +38,9 @@ func (ip *Importer) RunImport(bytes []byte) error {
 	}
 	var importErrors []ImportError
 	fmt.Println("Starting processing of", len(entries), "entries")
-
 	for _, entrie := range entries {
-		publisher, err := ip.APIClient.CreatePublisher(context.Background(), entrie.Publisher.Name, entrie.Publisher.URL)
+		ctx := context.Background()
+		publisher, err := ip.APIClient.CreatePublisher(ctx, entrie.Publisher.Name, entrie.Publisher.URL)
 		if err != nil {
 			importErrors = append(importErrors, ImportError{
 				Publisher: entrie.Publisher,
@@ -49,8 +49,9 @@ func (ip *Importer) RunImport(bytes []byte) error {
 			continue
 		}
 		for _, publication := range entrie.Publications {
+			ctx := context.Background()
 			if _, err := ip.APIClient.CreatePublication(
-				context.Background(),
+				ctx,
 				publication.Name,
 				publication.Description,
 				publication.LanguageCode,
