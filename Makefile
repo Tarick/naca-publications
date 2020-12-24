@@ -11,7 +11,9 @@ BUILD_VERSION="${BUILD_TAG}-${BUILD_HASH}"
 BUILD_TIME=$(shell date --utc +%F-%H:%m:%SZ)
 PACKAGE=publications
 LDFLAGS=-extldflags=-static -w -s -X ${PACKAGE}/internal/version.Version=${BUILD_VERSION} -X ${PACKAGE}/internal/version.BuildTime=${BUILD_TIME}
-CONTAINER_IMAGE_REGISTRY=local/publications
+# This CONTAINER_REGISTRY must be sourced from environment and it must be FQDN,
+# containerd registry plugin doesn't give a shit about short names even if they're present locally, appends docker.io to it
+CONTAINER_IMAGE_REGISTRY=${CONTAINER_REGISTRY_FQDN}/publications
 
 help:
 	@echo "build, build-images, deps, build-api, build-api-image, generate-api, build-sql-migrations-image, build-importer, build-and-deploy, deploy-to-local-k8s"
@@ -44,9 +46,10 @@ generate-api:
 
 build-api-image:
 	@echo "[INFO] Building API container image"
-	docker build -t ${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_BRANCH}-${BUILD_HASH} \
-	-t ${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_VERSION} \
-	--build-arg BUILD_VERSION=${BUILD_VERSION} -f cmd/publications-api/Dockerfile .
+	buildctl build --frontend dockerfile.v0 --opt build-arg:BUILD_VERSION=${BUILD_VERSION} \
+	--local context=. --local dockerfile=cmd/publications-api  \
+	--output type=image,\"name=${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_BRANCH}-${BUILD_HASH},${CONTAINER_IMAGE_REGISTRY}/publications-api:${BUILD_VERSION}\"
+	@echo "[INFO] Image built successfully"
 
 build-importer: deps
 	@echo "[INFO] Building Publications importer binary"
@@ -55,9 +58,10 @@ build-importer: deps
 
 build-sql-migrations-image:
 	@echo "[INFO] Building SQL migrations image"
-	docker build -t ${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_BRANCH}-${BUILD_HASH} \
-	-t ${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_VERSION} \
-	-f migrations/Dockerfile .
+	buildctl build --frontend dockerfile.v0 --opt build-arg:BUILD_VERSION=${BUILD_VERSION} \
+	--local context=. --local dockerfile=migrations  \
+	--output type=image,\"name=${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_BRANCH}-${BUILD_HASH},${CONTAINER_IMAGE_REGISTRY}/publications-sql-migrations:${BUILD_VERSION}\"
+	@echo "[INFO] Image built successfully"
 
 build-and-deploy: build-images deploy-to-local-k8s
 
