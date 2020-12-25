@@ -85,3 +85,16 @@ func (repo *Repository) GetPublications(ctx context.Context) ([]*entity.Publicat
 	}
 	return publications, nil
 }
+
+// Healthcheck is needed for application healtchecks
+func (repo *Repository) Healthcheck(ctx context.Context) error {
+	var exists bool
+	row := repo.pool.QueryRow(ctx, "select exists (select 1 from publications limit 1)")
+	if err := row.Scan(&exists); err != nil {
+		return err
+	}
+	if exists {
+		return nil
+	}
+	return fmt.Errorf("failure checking access to 'publications' table")
+}

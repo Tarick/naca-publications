@@ -41,6 +41,7 @@ type PublicationsRepository interface {
 	DeletePublisher(context.Context, uuid.UUID) error
 	GetPublisher(context.Context, uuid.UUID) (*entity.Publisher, error)
 	GetPublishers(context.Context) ([]*entity.Publisher, error)
+	Healthcheck(context.Context) error
 }
 
 // RSSFeedsAPIClient is used to call RSS Feeds service
@@ -59,7 +60,7 @@ type Config struct {
 // New creates new server configuration and configurates middleware
 func New(serverConfig Config, logger Logger, repository PublicationsRepository, rssFeedsAPIClient RSSFeedsAPIClient) *Server {
 	r := chi.NewRouter()
-	srv := &Server{
+	s := &Server{
 		httpServer:        &http.Server{Addr: serverConfig.Address, Handler: r},
 		logger:            logger,
 		repository:        repository,
@@ -88,6 +89,12 @@ func New(serverConfig Config, logger Logger, repository PublicationsRepository, 
 	// Could be moved back to middleware in case auth middleware meddling
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
+		if err := s.repository.Healthcheck(r.Context()); err != nil {
+			s.logger.Error("Healthcheck: repository check failed with: ", err)
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Write([]byte("Repository is unailable"))
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("."))
 	},
@@ -97,9 +104,9 @@ func New(serverConfig Config, logger Logger, repository PublicationsRepository, 
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "swaggerui"))
 	FileServer(r, "/doc", filesDir)
-	r.Mount("/publishers", srv.publishersRouter())
-	r.Mount("/publications", srv.publicationsRouter())
-	return srv
+	r.Mount("/publishers", s.publishersRouter())
+	r.Mount("/publications", s.publicationsRouter())
+	return s
 }
 
 // StartAndServe starts http server with signal control
